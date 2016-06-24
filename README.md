@@ -1,5 +1,7 @@
 # go-autostart
 
+[![GoDoc](https://godoc.org/github.com/ProtonMail/go-autostart?status.svg)](https://godoc.org/github.com/ProtonMail/go-autostart)
+
 A Go library to run a command after login.
 
 ## Usage
