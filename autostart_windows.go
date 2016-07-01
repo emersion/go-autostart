@@ -22,7 +22,7 @@ func (a *App) IsEnabled() bool {
 }
 
 func (a *App) Enable() error {
-	s := `"` + strings.Join(a.Exec, `" "`) + `"` + "\r\n"
+	s := quote(a.Exec) + "\r\n"
 
 	f, err := os.Create(a.path())
 	if err != nil {

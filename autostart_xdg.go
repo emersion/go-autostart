@@ -5,7 +5,6 @@ package autostart
 import (
 	"os"
 	"path/filepath"
-	"strings"
 	"text/template"
 )
 
@@ -44,7 +43,7 @@ type app struct {
 
 // Override App.Exec to return a string.
 func (a *app) Exec() string {
-	return `"` + strings.Join(a.App.Exec, `" "`) + `"`
+	return quote(a.App.Exec)
 }
 
 // Enable this app on startup.
