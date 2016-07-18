@@ -2,8 +2,8 @@ package autostart
 
 import (
 	"os"
+	"os/exec"
 	"path/filepath"
-	"strings"
 	"text/template"
 )
 
@@ -31,14 +31,16 @@ func init() {
 }
 
 func (a *App) path() string {
-	return filepath.Join(launchDir, a.Name + ".plist")
+	return filepath.Join(launchDir, a.Name+".plist")
 }
 
+// IsEnabled Check is app enabled startup.
 func (a *App) IsEnabled() bool {
 	_, err := os.Stat(a.path())
 	return !os.IsNotExist(err)
 }
 
+// Enable this app on startup.
 func (a *App) Enable() error {
 	t := template.Must(template.New("job").Parse(jobTemplate))
 
