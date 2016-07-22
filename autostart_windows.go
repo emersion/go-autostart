@@ -3,7 +3,6 @@ package autostart
 import (
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 var startupDir string
@@ -30,7 +29,7 @@ func (a *App) Enable() error {
 	}
 	defer f.Close()
 
-	_, err := f.Write([]byte(s))
+	_, err = f.Write([]byte(s))
 	return err
 }
 
