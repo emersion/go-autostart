@@ -3,6 +3,7 @@ package autostart
 import (
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 var startupDir string
@@ -21,7 +22,7 @@ func (a *App) IsEnabled() bool {
 }
 
 func (a *App) Enable() error {
-	s := quote(a.Exec) + "\r\n"
+	s := "start " + strings.Join(a.Exec, " ") + "\r\n"
 
 	f, err := os.Create(a.path())
 	if err != nil {
