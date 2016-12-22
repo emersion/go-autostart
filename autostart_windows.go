@@ -21,9 +21,9 @@ func (a *App) IsEnabled() bool {
 }
 
 func (a *App) Enable() error {
-	return os.Link(a.Exec[0], filepath.Join(startupDir, a.Name+".exe"))
+	return os.Link(a.Exec[0], a.path())
 }
 
 func (a *App) Disable() error {
-	return os.Remove(filepath.Join(startupDir, a.Name+".exe"))
+	return os.Remove(a.path())
 }
