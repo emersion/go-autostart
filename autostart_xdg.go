@@ -28,7 +28,7 @@ func init() {
 }
 
 func (a *App) path() string {
-	return filepath.Join(autostartDir, a.Name + ".desktop")
+	return filepath.Join(autostartDir, a.Name+".desktop")
 }
 
 // Check if the app is enabled on startup.

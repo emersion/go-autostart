@@ -3,7 +3,6 @@ package autostart
 import (
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 var startupDir string
@@ -13,7 +12,7 @@ func init() {
 }
 
 func (a *App) path() string {
-	return filepath.Join(startupDir, a.Name + ".bat")
+	return filepath.Join(startupDir, a.Name+".exe")
 }
 
 func (a *App) IsEnabled() bool {
@@ -22,18 +21,9 @@ func (a *App) IsEnabled() bool {
 }
 
 func (a *App) Enable() error {
-	s := "start " + strings.Join(a.Exec, " ") + "\r\n"
-
-	f, err := os.Create(a.path())
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	_, err = f.Write([]byte(s))
-	return err
+	return os.Link(a.Exec[0], filepath.Join(startupDir, a.Name+".exe"))
 }
 
 func (a *App) Disable() error {
-	return os.Remove(a.path())
+	return os.Remove(filepath.Join(startupDir, a.Name+".exe"))
 }
