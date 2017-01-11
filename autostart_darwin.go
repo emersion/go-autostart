@@ -2,7 +2,6 @@ package autostart
 
 import (
 	"os"
-	"os/exec"
 	"path/filepath"
 	"text/template"
 )
@@ -54,20 +53,11 @@ func (a *App) Enable() error {
 		return err
 	}
 
-	cmd := exec.Command("launchctl", "load", a.path())
-	if err := cmd.Run(); err != nil {
-		return err
-	}
-
 	return nil
 }
 
 // Disable this app on startup.
 func (a *App) Disable() error {
-	cmd := exec.Command("launchctl", "unload", a.path())
-	if err := cmd.Run(); err != nil {
-		return err
-	}
 
 	return os.Remove(a.path())
 }
