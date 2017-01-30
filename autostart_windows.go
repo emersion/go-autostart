@@ -1,6 +1,16 @@
 package autostart
 
+// #cgo LDFLAGS: -lole32 -luuid
+/*
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+int CreateShortcut(char *shortcutA, char *path, char *args);
+*/
+import "C"
+
 import (
+	"errors"
 	"os"
 	"path/filepath"
 )
@@ -12,7 +22,7 @@ func init() {
 }
 
 func (a *App) path() string {
-	return filepath.Join(startupDir, a.Name+".exe")
+	return filepath.Join(startupDir, a.Name+".lnk")
 }
 
 func (a *App) IsEnabled() bool {
@@ -21,7 +31,14 @@ func (a *App) IsEnabled() bool {
 }
 
 func (a *App) Enable() error {
-	return os.Link(a.Exec[0], a.path())
+	path := a.Exec[0]
+	args := quote(a.Exec[1:])
+
+	res := C.CreateShortcut(C.CString(a.path()), C.CString(path), C.CString(args))
+	if res == 0 {
+		return errors.New("autostart: cannot create shortcut")
+	}
+	return nil
 }
 
 func (a *App) Disable() error {
