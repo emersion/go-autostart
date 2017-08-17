@@ -13,6 +13,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 var startupDir string
@@ -27,12 +28,13 @@ func (a *App) path() string {
 
 func (a *App) IsEnabled() bool {
 	_, err := os.Stat(a.path())
+
 	return !os.IsNotExist(err)
 }
 
 func (a *App) Enable() error {
 	path := a.Exec[0]
-	args := quote(a.Exec[1:])
+	args := strings.Join(a.Exec[1:], " ")
 
 	res := C.CreateShortcut(C.CString(a.path()), C.CString(path), C.CString(args))
 	if res == 0 {
