@@ -10,10 +10,7 @@ int CreateShortcut(char *shortcutA, char *path, char *args) {
 	IPersistFile* pIPF;
 	HRESULT       hr;
 
-	hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
-	if (!SUCCEEDED(hr)) {
-		return FALSE;
-	}
+	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
 	// Shortcut filename: convert ANSI to unicode
 	WORD shortcutW[MAX_PATH];
@@ -48,5 +45,6 @@ int CreateShortcut(char *shortcutA, char *path, char *args) {
 
 	pIPF->lpVtbl->Release(pIPF);
 	pISL->lpVtbl->Release(pISL);
+
 	return TRUE;
 }

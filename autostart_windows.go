@@ -11,14 +11,16 @@ import "C"
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 var startupDir string
 
 func init() {
-	startupDir = filepath.Join(os.Getenv("USERPROFILE"), "Start Menu", "Programs", "Startup")
+	startupDir = filepath.Join(os.Getenv("USERPROFILE"), "AppData", "Roaming", "Microsoft", "Windows", "Start Menu", "Programs", "Startup")
 }
 
 func (a *App) path() string {
@@ -27,16 +29,17 @@ func (a *App) path() string {
 
 func (a *App) IsEnabled() bool {
 	_, err := os.Stat(a.path())
+
 	return !os.IsNotExist(err)
 }
 
 func (a *App) Enable() error {
 	path := a.Exec[0]
-	args := quote(a.Exec[1:])
+	args := strings.Join(a.Exec[1:], " ")
 
 	res := C.CreateShortcut(C.CString(a.path()), C.CString(path), C.CString(args))
 	if res == 0 {
-		return errors.New("autostart: cannot create shortcut")
+		return errors.New(fmt.Sprintf("autostart: cannot create shortcut '%s'", a.path()))
 	}
 	return nil
 }
