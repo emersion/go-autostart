@@ -37,7 +37,9 @@ func (a *App) Enable() error {
 	path := a.Exec[0]
 	args := strings.Join(a.Exec[1:], " ")
 
-	_ = os.MkdirAll(startupDir, 0777)
+	if err := os.MkdirAll(startupDir, 0777); err != nil {
+		return nil
+	}
 	res := C.CreateShortcut(C.CString(a.path()), C.CString(path), C.CString(args))
 	if res == 0 {
 		return errors.New(fmt.Sprintf("autostart: cannot create shortcut '%s'", a.path()))

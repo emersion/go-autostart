@@ -43,7 +43,9 @@ func (a *App) IsEnabled() bool {
 func (a *App) Enable() error {
 	t := template.Must(template.New("job").Parse(jobTemplate))
 
-	_ = os.MkdirAll(launchDir, 0777)
+	if err := os.MkdirAll(launchDir, 0777); err != nil {
+		return err
+	}
 	f, err := os.Create(a.path())
 	if err != nil {
 		return err
