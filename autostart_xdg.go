@@ -50,6 +50,7 @@ func (a *app) Exec() string {
 func (a *App) Enable() error {
 	t := template.Must(template.New("desktop").Parse(desktopTemplate))
 
+	_ = os.MkdirAll(autostartDir, 0777)
 	f, err := os.Create(a.path())
 	if err != nil {
 		return err
