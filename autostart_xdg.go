@@ -51,7 +51,7 @@ func (a *App) Enable() error {
 	t := template.Must(template.New("desktop").Parse(desktopTemplate))
 
 	if err := os.MkdirAll(autostartDir, 0777); err != nil {
-		return nil
+		return err
 	}
 	f, err := os.Create(a.path())
 	if err != nil {

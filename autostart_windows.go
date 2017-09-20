@@ -38,7 +38,7 @@ func (a *App) Enable() error {
 	args := strings.Join(a.Exec[1:], " ")
 
 	if err := os.MkdirAll(startupDir, 0777); err != nil {
-		return nil
+		return err
 	}
 	res := C.CreateShortcut(C.CString(a.path()), C.CString(path), C.CString(args))
 	if res == 0 {
