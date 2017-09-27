@@ -36,7 +36,7 @@ func (a *App) path() string {
 // IsEnabled Check is app enabled startup.
 func (a *App) IsEnabled() bool {
 	_, err := os.Stat(a.path())
-	return !os.IsNotExist(err)
+	return err == nil
 }
 
 // Enable this app on startup.
