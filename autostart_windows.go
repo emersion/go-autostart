@@ -6,7 +6,7 @@ package autostart
 #include <stdint.h>
 #include <windows.h>
 
-int64_t CreateShortcut(char *shortcutA, char *path, char *args);
+uint64_t CreateShortcut(char *shortcutA, char *path, char *args);
 */
 import "C"
 
