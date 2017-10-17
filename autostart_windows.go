@@ -41,7 +41,7 @@ func (a *App) Enable() error {
 		return err
 	}
 	res := C.CreateShortcut(C.CString(a.path()), C.CString(path), C.CString(args))
-	if res == 0 {
+	if res != 0 {
 		return errors.New(fmt.Sprintf("autostart: cannot create shortcut '%s' error code: 0x%o", a.path(), res))
 	}
 	return nil
