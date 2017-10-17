@@ -47,5 +47,5 @@ int64_t CreateShortcut(char *shortcutA, char *path, char *args) {
 	pIPF->lpVtbl->Release(pIPF);
 	pISL->lpVtbl->Release(pISL);
 
-	return TRUE;
+	return 0x0;
 }
