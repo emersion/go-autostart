@@ -3,9 +3,10 @@ package autostart
 // #cgo LDFLAGS: -lole32 -luuid
 /*
 #define WIN32_LEAN_AND_MEAN
+#include <stdint.h>
 #include <windows.h>
 
-int CreateShortcut(char *shortcutA, char *path, char *args);
+uint64_t CreateShortcut(char *shortcutA, char *path, char *args);
 */
 import "C"
 
@@ -40,8 +41,8 @@ func (a *App) Enable() error {
 		return err
 	}
 	res := C.CreateShortcut(C.CString(a.path()), C.CString(path), C.CString(args))
-	if res == 0 {
-		return errors.New(fmt.Sprintf("autostart: cannot create shortcut '%s'", a.path()))
+	if res != 0 {
+		return errors.New(fmt.Sprintf("autostart: cannot create shortcut '%s' error code: 0x%.8x", a.path(), res))
 	}
 	return nil
 }
