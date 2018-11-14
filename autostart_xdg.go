@@ -12,7 +12,8 @@ const desktopTemplate = `[Desktop Entry]
 Type=Application
 Name={{.DisplayName}}
 Exec={{.Exec}}
-{{- if .Icon}}Icon={{.Icon}}{{end}}
+{{- if .Icon}}
+Icon={{.Icon}}{{end}}
 X-GNOME-Autostart-enabled=true
 `
 
