@@ -18,7 +18,7 @@ func main() {
 	app := &autostart.App{
 		Name: "test",
 		DisplayName: "Just a Test App",
-		Exec: []string{"bash", "-c", "echo autostart >> ~/autostart.txt"},
+		Exec: []string{"sh", "-c", "echo autostart >> ~/autostart.txt"},
 	}
 
 	if app.IsEnabled() {
