@@ -1,6 +1,6 @@
 # go-autostart
 
-[![GoDoc](https://godoc.org/github.com/ProtonMail/go-autostart?status.svg)](https://godoc.org/github.com/ProtonMail/go-autostart)
+[![GoDoc](https://godoc.org/github.com/emersion/go-autostart?status.svg)](https://godoc.org/github.com/emersion/go-autostart)
 
 A Go library to run a command after login.
 
@@ -11,7 +11,7 @@ package main
 
 import (
 	"log"
-	"github.com/ProtonMail/go-autostart"
+	"github.com/emersion/go-autostart"
 )
 
 func main() {
