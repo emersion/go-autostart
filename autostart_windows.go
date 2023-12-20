@@ -29,6 +29,9 @@ func (a *App) IsEnabled() bool {
 
 func (a *App) Enable() error {
 	exePath := a.Exec[0]
+
+	exePath = os.ExpandEnv(exePath)
+
 	args := strings.Join(a.Exec[1:], " ")
 
 	fullPath := fmt.Sprintf("\"%s\" %s", exePath, args)
