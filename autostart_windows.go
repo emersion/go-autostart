@@ -30,12 +30,12 @@ func (a *App) IsEnabled() bool {
 func (a *App) Enable() error {
 	exePath := a.Exec[0]
 
+	exePath = strings.Replace(exePath, "%PROGRAMFILES%", os.Getenv("PROGRAMFILES"), -1)
+
 	args := strings.Join(a.Exec[1:], " ")
 
 	// Now fullPath will have the environment variables expanded
 	fullPath := fmt.Sprintf("\"%s\" %s", exePath, args)
-
-	fullPath = os.ExpandEnv(fullPath)
 
 	k, err := registry.OpenKey(registry.CURRENT_USER, startupKeyPath, registry.SET_VALUE)
 	if err != nil {
