@@ -1,52 +1,65 @@
 package autostart
 
-// #cgo LDFLAGS: -lole32 -luuid
-/*
-#define WIN32_LEAN_AND_MEAN
-#include <stdint.h>
-#include <windows.h>
-
-uint64_t CreateShortcut(char *shortcutA, char *path, char *args);
-*/
-import "C"
-
 import (
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"golang.org/x/sys/windows/registry"
 )
 
-var startupDir string
-
-func init() {
-	startupDir = filepath.Join(os.Getenv("USERPROFILE"), "AppData", "Roaming", "Microsoft", "Windows", "Start Menu", "Programs", "Startup")
-}
+var startupKeyPath = `Software\Microsoft\Windows\CurrentVersion\Run`
 
 func (a *App) path() string {
-	return filepath.Join(startupDir, a.Name+".lnk")
+	return filepath.Join(os.Getenv("USERPROFILE"), "AppData", "Roaming", "Microsoft", "Windows", "Start Menu", "Programs", "Startup", a.Name+".lnk")
 }
 
 func (a *App) IsEnabled() bool {
-	_, err := os.Stat(a.path())
+	k, err := registry.OpenKey(registry.CURRENT_USER, startupKeyPath, registry.QUERY_VALUE)
+	if err != nil {
+		return false
+	}
+	defer k.Close()
+
+	_, _, err = k.GetStringValue(a.Name)
 	return err == nil
 }
 
 func (a *App) Enable() error {
-	path := a.Exec[0]
+	exePath := a.Exec[0]
+
+	exePath = strings.Replace(exePath, "%PROGRAMFILES%", os.Getenv("PROGRAMFILES"), -1)
+
 	args := strings.Join(a.Exec[1:], " ")
 
-	if err := os.MkdirAll(startupDir, 0777); err != nil {
+	// Now fullPath will have the environment variables expanded
+	fullPath := fmt.Sprintf("\"%s\" %s", exePath, args)
+
+	k, err := registry.OpenKey(registry.CURRENT_USER, startupKeyPath, registry.SET_VALUE)
+	if err != nil {
 		return err
 	}
-	res := C.CreateShortcut(C.CString(a.path()), C.CString(path), C.CString(args))
-	if res != 0 {
-		return errors.New(fmt.Sprintf("autostart: cannot create shortcut '%s' error code: 0x%.8x", a.path(), res))
+	defer k.Close()
+
+	err = k.SetStringValue(a.Name, fullPath)
+	if err != nil {
+		return errors.New(fmt.Sprintf("autostart: cannot create registry value '%s': %v", a.Name, err))
 	}
 	return nil
 }
 
 func (a *App) Disable() error {
-	return os.Remove(a.path())
+	k, err := registry.OpenKey(registry.CURRENT_USER, startupKeyPath, registry.SET_VALUE)
+	if err != nil {
+		return err
+	}
+	defer k.Close()
+
+	err = k.DeleteValue(a.Name)
+	if err != nil {
+		return errors.New(fmt.Sprintf("autostart: cannot delete registry value '%s': %v", a.Name, err))
+	}
+	return nil
 }
