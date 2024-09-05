@@ -31,7 +31,7 @@ func init() {
 	launchDir = filepath.Join(os.Getenv("HOME"), "Library", "LaunchAgents")
 }
 
-func (a *z) path() string {
+func (a *App) path() string {
 	return filepath.Join(launchDir, a.Name+".plist")
 }
 
