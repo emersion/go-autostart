@@ -1,3 +1,5 @@
+#define UNICODE
+#define _UNICODE
 #include <windows.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -15,7 +17,7 @@ uint64_t CreateShortcut(char *shortcutA, char *path, char *args) {
 
 	// Shortcut filename: convert ANSI to unicode
 	WORD shortcutW[MAX_PATH];
-	int nChar = MultiByteToWideChar(CP_ACP, 0, shortcutA, -1, shortcutW, MAX_PATH);
+	int nChar = MultiByteToWideChar(CP_UTF8, 0, shortcutA, -1, shortcutW, MAX_PATH);
 
 	hr = CoCreateInstance(&CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, &IID_IShellLink, (LPVOID*)&pISL);
 	if (!SUCCEEDED(hr)) {
