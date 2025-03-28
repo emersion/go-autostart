@@ -1,3 +1,5 @@
+#define UNICODE
+#define _UNICODE
 #include <windows.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -15,20 +17,28 @@ uint64_t CreateShortcut(char *shortcutA, char *path, char *args) {
 
 	// Shortcut filename: convert ANSI to unicode
 	WORD shortcutW[MAX_PATH];
-	int nChar = MultiByteToWideChar(CP_ACP, 0, shortcutA, -1, shortcutW, MAX_PATH);
+	int nChar = MultiByteToWideChar(CP_UTF8, 0, shortcutA, -1, shortcutW, MAX_PATH);
 
 	hr = CoCreateInstance(&CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, &IID_IShellLink, (LPVOID*)&pISL);
 	if (!SUCCEEDED(hr)) {
 		return hr+0x01000000;
 	}
 
+	// Convert path to unicode
+	WCHAR pathW[MAX_PATH];
+	int pathLen = MultiByteToWideChar(CP_UTF8, 0, path, -1, pathW, MAX_PATH);
+
 	// See https://msdn.microsoft.com/en-us/library/windows/desktop/bb774950(v=vs.85).aspx
-	hr = pISL->lpVtbl->SetPath(pISL, path);
+	hr = pISL->lpVtbl->SetPath(pISL, pathW);
 	if (!SUCCEEDED(hr)) {
 		return hr+0x02000000;
 	}
 
-	hr = pISL->lpVtbl->SetArguments(pISL, args);
+	// Convert args to unicode
+	WCHAR argsW[MAX_PATH];
+	int argsLen = MultiByteToWideChar(CP_UTF8, 0, args, -1, argsW, MAX_PATH);
+
+	hr = pISL->lpVtbl->SetArguments(pISL, argsW);
 	if (!SUCCEEDED(hr)) {
 		return hr+0x03000000;
 	}
